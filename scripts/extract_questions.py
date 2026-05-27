@@ -59,13 +59,6 @@ SOURCES = [
         "question_pages": (2, 6),
         "answers": PUBLIC_2_ANSWERS,
     },
-    {
-        "match": "공개문제 3",
-        "title": "BIM 운용전문가 필기시험 공개문제",
-        "kind": "columns",
-        "question_pages": (1, 5),
-        "answers": PUBLIC_3_ANSWERS,
-    },
 ]
 
 ARCHITECTURE_PAGE_8_TEXT = """
@@ -242,7 +235,7 @@ def find_source(path: Path) -> dict:
     for source in SOURCES:
         if source["match"] in path.name:
             return source
-    raise ValueError(f"알 수 없는 PDF: {path.name}")
+    return {}
 
 
 def main() -> None:
@@ -251,6 +244,9 @@ def main() -> None:
 
     for pdf_path in sorted(Path(".").glob("*.pdf")):
         source = find_source(pdf_path)
+        if not source:
+            print(f"건너뜀: {pdf_path.name}")
+            continue
         if source["kind"] == "single":
             text = extract_single_column(pdf_path)
             answer_map = {}
