@@ -1,0 +1,16 @@
+# Local source PDFs
+*.pdf
+
+# Python extraction cache
+__pycache__/
+*.py[cod]
+
+# Local screenshots / debug images
+*_check.png
+*_debug.png
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
