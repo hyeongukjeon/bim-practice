@@ -22,6 +22,7 @@ const elements = {
   bookmark: document.querySelector("#bookmarkButton"),
   options: document.querySelector("#options"),
   result: document.querySelector("#resultText"),
+  explanation: document.querySelector("#explanationText"),
   prev: document.querySelector("#prevButton"),
   next: document.querySelector("#nextButton"),
   bookmarkSummary: document.querySelector("#bookmarkSummary"),
@@ -376,12 +377,16 @@ function renderQuiz() {
   elements.result.className = "result";
   if (!isAnswered) {
     elements.result.textContent = "";
+    elements.explanation.hidden = true;
+    elements.explanation.textContent = "";
   } else if (selected === item.answer) {
     elements.result.textContent = "정답";
     elements.result.classList.add("correct");
+    renderExplanation(item);
   } else {
     elements.result.textContent = `오답 · 정답 ${optionMarks[item.answer]}`;
     elements.result.classList.add("wrong");
+    renderExplanation(item);
   }
 }
 
@@ -394,10 +399,26 @@ function renderEmptyQuiz() {
   elements.question.textContent = state.mode === "bookmarks" ? "북마크한 문제가 없습니다." : "문제 데이터를 찾을 수 없습니다.";
   elements.options.innerHTML = "";
   elements.result.textContent = state.mode === "bookmarks" ? "문제 화면의 별표를 눌러 저장해보세요." : "";
+  elements.explanation.hidden = true;
+  elements.explanation.textContent = "";
   elements.bookmark.textContent = "☆";
   elements.prev.disabled = true;
   elements.next.disabled = false;
   elements.next.textContent = "홈으로";
+}
+
+function renderExplanation(item) {
+  elements.explanation.hidden = false;
+  elements.explanation.innerHTML = "";
+
+  const label = document.createElement("span");
+  label.className = "explanation-label";
+  label.textContent = "해설";
+
+  const text = document.createElement("p");
+  text.textContent = item.explanation || `정답은 '${item.options[item.answer]}'입니다. 핵심 용어와 기능을 함께 기억해두면 좋습니다.`;
+
+  elements.explanation.append(label, text);
 }
 
 function scoreText(session) {
