@@ -3,48 +3,84 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>BIM전문가 2급 랜덤 문제</title>
+    <title>BIM전문가 2급 문제 풀이</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="app" aria-live="polite">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">BIM전문가 2급</p>
-          <h1>랜덤 문제 풀이</h1>
-        </div>
-        <button id="resetButton" class="icon-button" type="button" aria-label="문제 순서 다시 섞기" title="문제 순서 다시 섞기">
+        <button id="homeButton" class="ghost-button" type="button">BIM 2급</button>
+        <button id="resetButton" class="ghost-button icon-only" type="button" aria-label="현재 모드 초기화" title="현재 모드 초기화">
           ↻
         </button>
       </header>
 
-      <section class="status" aria-label="풀이 현황">
-        <span id="positionText">1 / 340</span>
-        <span id="scoreText">정답 0 · 오답 0</span>
-      </section>
-
-      <section class="question-panel">
-        <div class="meta-row">
-          <span id="sourceText" class="source"></span>
-          <span id="numberText" class="number"></span>
+      <section id="homeView" class="home-view">
+        <div class="hero">
+          <p class="eyebrow">건축 BIM전문가 2급</p>
+          <h1>건축 BIM 2급<br>문제풀이</h1>
+          <p class="hero-copy">총 200문항으로 연습합니다.</p>
         </div>
-        <h2 id="questionText"></h2>
+
+        <div class="mode-grid" aria-label="풀이 모드">
+          <button class="mode-card" type="button" data-mode="all">
+            <span class="mode-kicker">Practice</span>
+            <strong>전체문제 풀기</strong>
+            <span>200문항을 랜덤 순서로 계속 풉니다.</span>
+          </button>
+          <button class="mode-card" type="button" data-mode="exam">
+            <span class="mode-kicker">Mock Test</span>
+            <strong>랜덤 모의고사</strong>
+            <span>50문제, 60점 이상 합격 기준입니다.</span>
+          </button>
+          <button class="mode-card" type="button" data-mode="bookmarks">
+            <span class="mode-kicker">Saved</span>
+            <strong>북마크 문제</strong>
+            <span id="bookmarkSummary">저장한 문제만 다시 봅니다.</span>
+          </button>
+        </div>
       </section>
 
-      <section id="options" class="options" aria-label="보기"></section>
+      <section id="quizView" class="quiz-view" hidden>
+        <div class="mode-tabs" aria-label="풀이 모드 전환">
+          <button type="button" data-mode="all">전체문제</button>
+          <button type="button" data-mode="exam">모의고사</button>
+          <button type="button" data-mode="bookmarks">북마크</button>
+        </div>
 
-      <div id="resultText" class="result" role="status"></div>
+        <section class="status" aria-label="풀이 현황">
+          <span id="modeText"></span>
+          <span id="positionText"></span>
+          <span id="scoreText"></span>
+        </section>
 
-      <nav class="bottom-nav" aria-label="문제 이동">
-        <button id="prevButton" class="nav-button" type="button">
-          <span aria-hidden="true">‹</span>
-          이전문제
-        </button>
-        <button id="nextButton" class="nav-button primary" type="button">
-          다음문제
-          <span aria-hidden="true">›</span>
-        </button>
-      </nav>
+        <section class="question-panel">
+          <div class="meta-row">
+            <div class="meta-copy">
+              <span id="sourceText" class="source"></span>
+              <span id="numberText" class="number"></span>
+            </div>
+            <button id="bookmarkButton" class="bookmark-button" type="button" aria-label="북마크 추가" title="북마크 추가">☆</button>
+          </div>
+          <h2 id="questionText"></h2>
+        </section>
+
+        <section id="options" class="options" aria-label="보기"></section>
+        <div id="resultText" class="result" role="status"></div>
+
+        <nav class="bottom-nav" aria-label="문제 이동">
+          <button id="prevButton" class="nav-button" type="button">
+            <span aria-hidden="true">‹</span>
+            이전
+          </button>
+          <button id="nextButton" class="nav-button primary" type="button">
+            다음
+            <span aria-hidden="true">›</span>
+          </button>
+        </nav>
+      </section>
+
+      <section id="summaryView" class="summary-view" hidden></section>
     </main>
 
     <script src="data/questions.js"></script>
