@@ -415,10 +415,19 @@ function renderExplanation(item) {
   label.className = "explanation-label";
   label.textContent = "해설";
 
-  const text = document.createElement("p");
-  text.textContent = item.explanation || `정답은 '${item.options[item.answer]}'입니다. 핵심 용어와 기능을 함께 기억해두면 좋습니다.`;
+  const details = Array.isArray(item.optionExplanations) && item.optionExplanations.length === 4
+    ? item.optionExplanations
+    : [item.explanation || `정답은 '${item.options[item.answer]}'입니다. 핵심 용어와 기능을 함께 기억해두면 좋습니다.`];
 
-  elements.explanation.append(label, text);
+  const list = document.createElement("div");
+  list.className = "explanation-list";
+  details.forEach((detail) => {
+    const text = document.createElement("p");
+    text.textContent = detail;
+    list.append(text);
+  });
+
+  elements.explanation.append(label, list);
 }
 
 function scoreText(session) {
