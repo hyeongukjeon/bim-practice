@@ -302,6 +302,12 @@ OPTION_RULES = [
     (["WT"], "WT는 Window Tile, 즉 창 배열과 관련된 단축키입니다."),
     (["AL"], "AL은 Align, 즉 정렬 도구의 단축키입니다."),
     (["OF"], "OF는 Offset, 즉 간격 띄우기 도구의 단축키입니다."),
+    (["LS"], "LS는 Revit 기본 단축키에서 간격 띄우기(Offset)를 의미하지 않습니다."),
+    (["LI"], "LI는 일반적으로 모델 선(Model Line) 계열 단축키로 쓰이며 간격 띄우기 단축키가 아닙니다."),
+    (["MA"], "MA는 Match Type Properties, 즉 유형 특성 일치 도구의 단축키입니다."),
+    (["HR"], "HR은 가시성/그래픽 재지정(VV/VG) 단축키가 아닙니다."),
+    (["WA"], "WA는 Wall, 즉 벽 작성 도구의 단축키입니다."),
+    (["CS"], "CS는 가시성/그래픽 재지정(VV/VG) 단축키가 아닙니다."),
     (["설계 옵션"], "설계 옵션은 같은 프로젝트 안에서 대안 설계를 나누어 비교하고 관리하는 기능입니다."),
     (["작업 세트"], "작업 세트는 작업공유 프로젝트에서 요소를 작업 범위별로 나누어 관리하는 단위입니다."),
     (["중앙 파일"], "중앙 파일은 작업공유 프로젝트에서 모든 로컬 파일 변경 사항이 모이고 배포되는 기준 파일입니다."),
@@ -315,6 +321,10 @@ OPTION_RULES = [
     (["NWD"], "NWD는 Navisworks 모델과 검토 데이터를 패키징해 공유하는 형식입니다."),
     (["RFA"], "RFA는 Revit 패밀리 파일 형식으로 Navisworks 저장 확장자와는 다릅니다."),
     (["RVT", "rvt"], "RVT는 Revit 프로젝트 파일 형식입니다."),
+    (["CAD"], "CAD 파일은 Revit에서 링크하거나 가져올 수 있는 도면 파일 계열입니다."),
+    (["DWF"], "DWF는 설계 검토와 공유용 Autodesk 파일 형식으로 Revit에서 링크 대상으로 다룰 수 있습니다."),
+    (["docx"], "docx는 Word 문서 파일 형식이라 Revit 모델 링크 형식이 아닙니다."),
+    (["pptx"], "pptx는 PowerPoint 프레젠테이션 형식이라 Revit 저장 파일 형식이 아닙니다."),
     (["RTE", "rte"], "RTE는 Revit 프로젝트 템플릿 파일 형식입니다."),
     (["IFC"], "IFC는 서로 다른 BIM 소프트웨어 간 객체 정보를 교환하기 위한 개방형 표준 포맷입니다."),
     (["CAD 가져오기"], "CAD 가져오기는 외부 CAD 도면을 Revit 프로젝트에 불러오는 삽입 계열 기능입니다."),
@@ -329,6 +339,7 @@ OPTION_RULES = [
     (["BIM 매뉴얼", "BIM 핸드북", "BIM 설계 업무지침서", "시설사업 BIM적용 기본지침서"], "공공 BIM 기준 명칭 문제는 발주기관의 공식 지침서 이름을 구분하는 유형입니다."),
     (["품질", "해상도", "출력설정", "배경", "그림자"], "렌더링 설정은 품질과 해상도, 조명·배경 조건에 따라 시간과 결과가 달라집니다."),
     (["초안", "중간", "낮음", "높음"], "렌더 품질은 낮을수록 계산량이 적어 빠르고, 높을수록 시간이 오래 걸립니다."),
+    (["지형면"], "지형면은 대지의 높이와 지형 형태를 표현하는 Revit 대지 모델 요소입니다."),
     (["태그"], "태그는 요소의 매개변수 값을 도면에 문자로 표시하는 주석 요소입니다."),
     (["다중카테고리"], "다중카테고리 태그는 여러 카테고리에 공통으로 적용되는 공유 매개변수를 표시할 수 있습니다."),
     (["주석"], "주석은 치수, 문자, 태그, 기호처럼 도면 정보를 설명하기 위해 배치하는 요소입니다."),
@@ -340,13 +351,7 @@ def option_detail(question: str, option: str) -> str:
     for keywords, detail in OPTION_RULES:
         if any(keyword in option for keyword in keywords):
             return detail
-    if "단축키" in question:
-        return f"{option}는 Revit 단축키 후보입니다. 이 유형은 기능명과 실제 약어가 맞는지를 구분해야 합니다."
-    if "탭" in question or "구성요소" in question:
-        return f"{option}가 해당 리본 탭이나 패널에 실제로 포함되는지 확인하는 보기입니다."
-    if "확장자" in question or "파일 형식" in question:
-        return f"{option}는 파일 형식 후보입니다. Revit과 Navisworks가 실제로 저장하거나 링크하는 확장자인지 구분해야 합니다."
-    return f"이 보기는 '{option}'라는 항목을 말하지만, 문제의 핵심 기능이나 개념과 정확히 연결되는지로 판단해야 합니다."
+    return ""
 
 
 def make_option_explanations(item: dict) -> list[str]:
@@ -357,16 +362,11 @@ def make_option_explanations(item: dict) -> list[str]:
 
     for index, option in enumerate(item["options"]):
         detail = option_detail(question, option)
-        if index == correct_index:
-            if negative:
-                explanations.append(f"{optionMarks(index)} 정답: {detail} 이 보기는 실제 내용과 맞지 않아서, '옳지 않은 것'을 고르는 이 문제의 정답입니다.")
-            else:
-                explanations.append(f"{optionMarks(index)} 정답: {detail} 그래서 문제에서 묻는 항목에 해당합니다.")
-        else:
-            if negative:
-                explanations.append(f"{optionMarks(index)} 오답: {detail} 이 보기는 실제 내용에 맞는 설명이라, '옳지 않은 것'으로 고르는 답은 아닙니다.")
-            else:
-                explanations.append(f"{optionMarks(index)} 오답: {detail} 다만 이 문제에서 묻는 정확한 항목은 아닙니다.")
+        if not detail:
+            explanations.append("")
+            continue
+        label = "정답" if index == correct_index else "오답"
+        explanations.append(f"{optionMarks(index)} {label}: {detail}")
 
     return explanations
 
@@ -402,7 +402,17 @@ def matching_note(question: str, correct: str) -> str:
         (["링크"], "링크 모델은 원본과 연결된 참조 모델이며, 업데이트와 일부 요소 복사에 활용됩니다."),
         (["그룹으로 로드"], "그룹으로 로드는 외부 모델 그룹을 프로젝트에 불러와 프로젝트 내부에서 활용하는 방식입니다."),
         (["매스", "대지"], "매스작업과 대지 도구는 초기 형상, 지형면, 소구역, 대지 경계 등을 다룰 때 사용합니다."),
-        (["소구역"], "소구역은 기존 지형면 위에 도로, 주차장 같은 영역을 나누어 표현하는 도구입니다."),
+    (["지형면 소구역은 기존 지형면 외부"], "소구역은 기존 지형면 위에 경계를 스케치해 그 지형면의 일부 영역을 나누는 기능입니다. 기존 지형면 바깥에 만드는 영역이 아니므로 이 설명은 틀립니다."),
+    (["소구역을 사용하면 도로", "주차장을 그릴"], "소구역은 지형면 위에 재료가 다른 도로, 포장면, 주차장 같은 영역을 표현할 때 사용할 수 있습니다."),
+    (["경계 편집"], "이미 만든 소구역은 경계 편집으로 스케치 경계를 수정해 영역 모양을 바꿀 수 있습니다."),
+    (["소구역은 다중"], "하나의 대지 안에서도 여러 소구역을 만들어 서로 다른 포장면이나 구역을 나누어 표현할 수 있습니다."),
+    (["소구역"], "소구역은 기존 지형면 위에 도로, 주차장 같은 영역을 나누어 표현하는 도구입니다."),
+    (["표면 분할"], "표면 분할은 기존 지형면을 별도의 지형면 조각으로 나누는 기능입니다. 내부에 다른 지형면을 새로 작성한다는 설명과는 다릅니다."),
+    (["표면 병합"], "표면 병합은 분리되어 있는 지형면을 하나의 지형면으로 합칠 때 사용하는 대지 수정 기능입니다."),
+    (["대지 경계선"], "대지 경계선은 평면도에서 부지의 법적 경계나 대지 영역을 표시하기 위해 작성합니다."),
+    (["데이터 가져오기를 통해 생성한 지형"], "가져온 데이터로 만든 지형도 점 편집이나 대지 수정 도구를 통해 조정할 수 있으므로, 전혀 수정할 수 없다는 설명은 틀립니다."),
+    (["점 배치"], "점 배치는 각 점의 높이값을 지정해 지형면을 만들거나 지형 높이를 조정하는 방식입니다."),
+    (["대지경계선을 따라 스케치"], "대지경계선은 경계를 스케치해 부지 범위를 표현하는 기능입니다."),
         (["지형"], "대지 모델은 점, 등고선, 가져오기 데이터 등을 이용해 지형면을 만들고 수정합니다."),
         (["형상 결합"], "형상 결합은 서로 겹치는 모델 요소의 중복 형상을 정리해 하나처럼 표현할 때 사용합니다."),
         (["코너로 자르기", "자르기/연장"], "코너로 자르기/연장은 벽이나 선을 코너에서 만나도록 자르거나 연장하는 수정 도구입니다."),
@@ -445,12 +455,14 @@ def find_source(path: Path) -> dict:
 def main() -> None:
     questions = []
     warnings = []
+    generated_from = []
 
     for pdf_path in sorted(Path(".").glob("*.pdf")):
         source = find_source(pdf_path)
         if not source:
             print(f"건너뜀: {pdf_path.name}")
             continue
+        generated_from.append(pdf_path.name)
         if source["kind"] == "single":
             text = extract_single_column(pdf_path)
             answer_map = {}
@@ -484,7 +496,7 @@ def main() -> None:
         print(f"{source['title']}: {len(parsed_for_source)}문항")
 
     out = {
-        "generatedFrom": [p.name for p in sorted(Path(".").glob("*.pdf"))],
+        "generatedFrom": generated_from,
         "total": len(questions),
         "questions": questions,
     }

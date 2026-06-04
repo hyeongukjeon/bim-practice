@@ -418,10 +418,15 @@ function renderExplanation(item) {
   const details = Array.isArray(item.optionExplanations) && item.optionExplanations.length === 4
     ? item.optionExplanations
     : [item.explanation || `정답은 '${item.options[item.answer]}'입니다. 핵심 용어와 기능을 함께 기억해두면 좋습니다.`];
+  const visibleDetails = details.filter((detail) => detail && detail.trim());
+  if (!visibleDetails.length) {
+    elements.explanation.hidden = true;
+    return;
+  }
 
   const list = document.createElement("div");
   list.className = "explanation-list";
-  details.forEach((detail) => {
+  visibleDetails.forEach((detail) => {
     const text = document.createElement("p");
     text.textContent = detail;
     list.append(text);
