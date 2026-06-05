@@ -440,9 +440,15 @@ function renderExplanation(item) {
 
   const list = document.createElement("div");
   list.className = "explanation-list";
-  const text = document.createElement("p");
-  text.textContent = detail;
-  list.append(text);
+  detail
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .forEach((paragraph) => {
+      const text = document.createElement("p");
+      text.textContent = paragraph;
+      list.append(text);
+    });
 
   elements.explanation.append(label, list);
 }
