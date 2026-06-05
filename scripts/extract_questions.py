@@ -10,8 +10,8 @@ from refine_explanations import apply_refinements
 CIRCLED = {"①": 1, "②": 2, "③": 3, "④": 4}
 HANGUL = {"가": 1, "나": 2, "다": 3, "라": 4}
 
-# The first public-problem PDF in this folder does not include its answer sheet.
-# Answer key source: https://www.scribd.com/document/950929635/
+# Fallback copy of the local 공개문제(1)-답안.pdf answer sheet.
+# When that PDF is present, answers are read directly from it.
 PUBLIC_1_ANSWERS = [
     4, 2, 4, 4, 1, 1, 3, 3, 1, 4,
     3, 3, 2, 2, 1, 3, 4, 1, 3, 3,
@@ -19,6 +19,22 @@ PUBLIC_1_ANSWERS = [
     2, 3, 4, 3, 3, 1, 3, 2, 2, 2,
     3, 4, 1, 1, 3, 4, 3, 2, 4, 4,
 ]
+
+ANSWER_MARKS = {"\u2460": 1, "\u2461": 2, "\u2462": 3, "\u2463": 4}
+
+
+def read_public_1_answers() -> list[int]:
+    answer_path = next(Path(".").glob("*(1)-*.pdf"), None)
+    if not answer_path:
+        return PUBLIC_1_ANSWERS
+
+    with pdfplumber.open(answer_path) as pdf:
+        text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+
+    answers = [ANSWER_MARKS[mark] for mark in re.findall(r"[\u2460-\u2463]", text)]
+    if len(answers) != 50:
+        raise ValueError(f"{answer_path.name}에서 50개 답안을 읽지 못했습니다: {len(answers)}개")
+    return answers
 
 PUBLIC_2_ANSWERS = [
     3, 3, 1, 4, 4, 3, 3, 1, 2, 1,
@@ -52,7 +68,7 @@ SOURCES = [
         "title": "BIM 운용전문가 필기 공개문제 1회",
         "kind": "columns",
         "question_pages": (2, 6),
-        "answers": PUBLIC_1_ANSWERS,
+        "answers": read_public_1_answers(),
     },
     {
         "match": "공개문제 2",
