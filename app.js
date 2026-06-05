@@ -407,6 +407,23 @@ function renderEmptyQuiz() {
   elements.next.textContent = "홈으로";
 }
 
+function cleanExplanationPrefix(detail) {
+  return detail.replace(/^[①②③④]\s*(정답|오답):\s*/, "");
+}
+
+function correctExplanation(item) {
+  if (item.answerExplanation && item.answerExplanation.trim()) {
+    return item.answerExplanation.trim();
+  }
+  if (Array.isArray(item.optionExplanations) && item.optionExplanations[item.answer]) {
+    return cleanExplanationPrefix(item.optionExplanations[item.answer].trim());
+  }
+  if (item.explanation && item.explanation.trim()) {
+    return cleanExplanationPrefix(item.explanation.trim());
+  }
+  return `정답은 '${item.options[item.answer]}'입니다.`;
+}
+
 function renderExplanation(item) {
   elements.explanation.hidden = false;
   elements.explanation.innerHTML = "";
@@ -415,22 +432,17 @@ function renderExplanation(item) {
   label.className = "explanation-label";
   label.textContent = "해설";
 
-  const details = Array.isArray(item.optionExplanations) && item.optionExplanations.length === 4
-    ? item.optionExplanations
-    : [item.explanation || `정답은 '${item.options[item.answer]}'입니다. 핵심 용어와 기능을 함께 기억해두면 좋습니다.`];
-  const visibleDetails = details.filter((detail) => detail && detail.trim());
-  if (!visibleDetails.length) {
+  const detail = correctExplanation(item);
+  if (!detail) {
     elements.explanation.hidden = true;
     return;
   }
 
   const list = document.createElement("div");
   list.className = "explanation-list";
-  visibleDetails.forEach((detail) => {
-    const text = document.createElement("p");
-    text.textContent = detail;
-    list.append(text);
-  });
+  const text = document.createElement("p");
+  text.textContent = detail;
+  list.append(text);
 
   elements.explanation.append(label, list);
 }
